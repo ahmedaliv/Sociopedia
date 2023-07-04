@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import {
   Box,
@@ -41,9 +41,6 @@ const NavBar = () => {
   const alt = theme.palette.background.alt;
 
   const fullName = `${user.firstName} ${user.lastName}`
-  useEffect(() => {
-    console.log(user)
-  })
   return (
     <FlexBetween padding="1rem %5" backgroundColor={alt}>
       <FlexBetween gap="1.75rem">
