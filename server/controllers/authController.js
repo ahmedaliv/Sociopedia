@@ -52,7 +52,7 @@ try {
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        return res.status(400).json({ error: "Invalid credentials" });
+        return res.status(400).json({ error: "Invalid Password" });
     }
     const token = jwt.sign({ id:user._id},process.env.JWT_SECRET);
     // this is to not send the password in the response to the front end

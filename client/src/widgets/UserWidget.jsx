@@ -11,6 +11,7 @@ import {
   import { useSelector } from "react-redux";
   import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
   
 
 // eslint-disable-next-line react/prop-types
@@ -22,7 +23,6 @@ const UserWidget = ({ userId, picturePath }) => {
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium;
     const main = palette.neutral.main;
-
     const getUser = async () => {
         const response = await fetch(`http://localhost:3001/users/${userId}`,
             {
@@ -32,15 +32,12 @@ const UserWidget = ({ userId, picturePath }) => {
                 },
         })
         const data = await response.json();
-        setUser(data);
+      setUser(data);
     }
     useEffect(() => {
        getUser(); 
-    }, []) //eslint-disable-line react-hooks/exhaustive-deps
+    },[]) //eslint-disable-line react-hooks/exhaustive-deps
     
-    if(!user){
-        return null;
-    }
     const {
         firstName,
         lastName,
@@ -49,12 +46,15 @@ const UserWidget = ({ userId, picturePath }) => {
         viewedProfile,
         impressions,
         friends,
-    } = user;
+    } = useSelector(state=>state.user)
 
   
   
-    return (
-      <WidgetWrapper>
+    if(!user){
+        return null;
+    }
+  return (
+    <WidgetWrapper>
         {/* FIRST ROW */}
         <FlexBetween
           gap="0.5rem"

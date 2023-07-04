@@ -78,29 +78,41 @@ const Form = () => {
     };
 
     const login = async (values, onSubmitProps) => {
-        const loggedInResponse = await fetch(
-            "http://localhost:3001/auth/login",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(values)
-            }
-        )
-        const loggedIn = await loggedInResponse.json();
-        onSubmitProps.resetForm();
-        if (loggedIn) {
+        try {
+          const response = await fetch("http://localhost:3001/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+          });
+      
+          if (response.ok) {
+            const { user, token } = await response.json();
             dispatch(
-                setLogin({
-                    user: loggedIn.user,
-                    token: loggedIn.token
-                })
-            )
-            navigate("/home")
+              setLogin({
+                user,
+                token,
+              })
+            );
+            onSubmitProps.resetForm();
+            navigate("/home");
+          } else {
+            const { error } = await response.json();
+            // Set the form error
+              if (error.includes("User")) {
+                
+                  onSubmitProps.setFieldError("email", "Invalid Email");
+              } else if (error.includes("Password")) {
+                onSubmitProps.setFieldError("password", "Invalid Password");
+              
+              }
+          }
+        } catch (error) {
+          console.error("Login error:", error);
         }
-    }
-
+      };
+      
     const handleFormSubmit = async (values, onSubmitProps) => {
         if (isLogin) await login(values, onSubmitProps);
         if (isRegister) await register(values, onSubmitProps)
